@@ -62,7 +62,61 @@ model User {
     image         String?
     accounts      Account[]
     sessions      Session[]
-    posts         Post[]
+    // posts         Post[]
+    bases         Base[]
+    Post          Post[]
+}
+
+model Base {
+    id        String  @id @default(cuid())
+    name      String
+    user      User    @relation(fields: [createdBy], references: [id])
+    createdBy String
+    tables    Table[]
+}
+
+model Table {
+    id      String   @id @default(cuid())
+    name    String
+    baseId  String
+    base    Base     @relation(fields: [baseId], references: [id])
+    fields  Field[] // cols
+    records Record[] // rows
+}
+
+// columns
+model Field {
+    id       String     @id @default(cuid())
+    name     String
+    table    Table      @relation(fields: [tableId], references: [id])
+    tableId  String
+    CellData CellData[]
+}
+
+// rows
+model Record {
+    id       String     @id @default(cuid())
+    table    Table      @relation(fields: [tableId], references: [id])
+    tableId  String
+    CellData CellData[]
+}
+
+// model Record {
+//     id      String @id @default(cuid())
+//     table   Table  @relation(fields: [tableId], references: [id])
+//     tableId String
+//     field   Field  @relation(fields: [fieldId], references: [id])
+//     fieldId String
+//     value   String
+// }
+
+model CellData {
+    id       String @id @default(cuid())
+    value    String
+    record   Record @relation(fields: [recordId], references: [id])
+    recordId String
+    field    Field  @relation(fields: [fieldId], references: [id])
+    fieldId  String
 }
 
 model VerificationToken {

@@ -1,36 +1,91 @@
 import Link from "next/link";
-
 import { LatestPost } from "~/app/_components/post";
 import { auth } from "~/server/auth";
 import { api, HydrateClient } from "~/trpc/server";
-import Navbar from "./_components/Navbar/Navbar";
-import TableNav from "./_components/TableNav/TableNav";
-import TableViews from "./_components/TableViews/TableViews";
+import { redirect } from "next/navigation";
+
+// import { api } from "../utils/trpc";
+
+import Navbar from "./_components/navbar";
+import TableNav from "./_components/tableNav";
+import TableViews from "./_components/tableViews";
+import { appRouter } from "~/server/api/root";
+import CreateBaseButton from "./_components/createBaseButton";
+import Table from "./_components/table";
+import BaseButton from "./_components/baseButton";
+// import { Bases } from "./_components/bases";
+import Dashboard from "./dashboard/page";
 
 export default async function Home() {
   const hello = await api.post.hello({ text: "from tRPC" });
   const session = await auth();
+  // const bases = await api.base.getAll.query();
+  // const create = api.post.create.useMutation();
+  // const base = await api.base.create({ name: "new base" });
+  // console.log("hello", api.base.create); // Check if api.base is defined
+  // base is not defined
+  // console.log("pls", api);
+  // console.log(appRouter);
+  // const addBase = api.base.create;
+
+  // async function createBase() {
+  //   const input = {
+  //     name: "new base",
+  //   };
+  //   try {
+  //     await create.mutateAsync(input);
+  //   } catch {}
+  // }
 
   if (session?.user) {
-    void api.post.getLatest.prefetch();
+    // void api.post.getLatest.prefetch();
+
+    redirect("/dashboard");
   }
 
   return (
-    <HydrateClient>
-      <main className="flex h-screen w-screen flex-col">
-        <Navbar></Navbar>
-        <TableNav></TableNav>
-        {/* <div className="flex-1"> */}
+    // <HydrateClient>
+    <main className="flex h-screen w-screen flex-col">
+      {/* <Navbar></Navbar>
+      <TableNav></TableNav>
+      <div className="flex flex-col">
         <TableViews></TableViews>
-        {/* </div> */}
-        {/* <Link
+        <p className="text-2xl">
+          {hello ? hello.greeting : "Loading tRPC query..."}
+        </p>
+        <CreateBaseButton></CreateBaseButton>
+        <Table id="cm87f66w9000559bz2thej6x3"></Table>
+        <Link
           href={session ? "/api/auth/signout" : "/api/auth/signin"}
           className="rounded-full bg-white/10 px-10 py-3 font-semibold no-underline transition hover:bg-white/20"
         >
           {session ? "Sign out" : "Sign in"}
-        </Link> */}
-      </main>
-      {/* <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
+        </Link>
+        <Bases></Bases>
+      </div> */}
+      <Link
+        href={session ? "/api/auth/signout" : "/api/auth/signin"}
+        className="rounded-full bg-white/10 px-10 py-3 font-semibold no-underline transition hover:bg-white/20"
+      >
+        {session ? "Sign out" : "Sign in"}
+      </Link>
+      {/* <Dashboard></Dashboard> */}
+    </main>
+  );
+  {
+    /* </div> */
+  }
+  {
+    /* <Link
+          href={session ? "/api/auth/signout" : "/api/auth/signin"}
+          className="rounded-full bg-white/10 px-10 py-3 font-semibold no-underline transition hover:bg-white/20"
+        >
+          {session ? "Sign out" : "Sign in"}
+        </Link> */
+  }
+
+  {
+    /* <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
         <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16">
           <Navbar></Navbar>
           <h1 className="text-5xl font-extrabold tracking-tight sm:text-[5rem]">
@@ -80,7 +135,7 @@ export default async function Home() {
 
           {session?.user && <LatestPost />}
         </div>
-      </main> */}
-    </HydrateClient>
-  );
+      </main> */
+  }
+  // </HydrateClient>
 }
